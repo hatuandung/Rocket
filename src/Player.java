@@ -1,33 +1,59 @@
 import java.awt.*;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class Player {
-    public int xPoints[];
-    public int yPoints[];
-    public int velocityX;
-    public int points;
+    public Vector2D position;
+    public Vector2D velocity;
     public Color color;
+    public Polygon polygon;
+    private List<Vector2D> vertices;
+    Random random;
 
-    public Player(int[] xPoints, int[] yPoints, int velocityX, int points, Color color) {
-        this.xPoints = xPoints;
-        this.yPoints = yPoints;
-        this.velocityX = velocityX;
-        this.points = points;
+
+    public Player(Vector2D position,Vector2D velocity, Color color) {
+        this.position = position;
         this.color = color;
+        this.velocity = velocity;
+        this.polygon = new Polygon();
+        this.vertices = Arrays.asList(
+                new Vector2D(),
+                new Vector2D(0, 16),
+                new Vector2D(20,8)
+        );
+        random = new Random();
+        this.vertices.forEach(vector2D -> polygon.addPoint((int) vector2D.x, (int) vector2D.y));
     }
 
-    /*public void drawPolygon(int xPoints[], int yPoints[], int points){
-
-        }*/
     public void runPlayer(){
-        this.xPoints[0] += velocityX;
-        this.xPoints[1] += velocityX;
-        this.xPoints[2] += velocityX;
+        if (this.position.x > 1024){
+            this.position.x = 0;
+            this.position.set(0,random.nextInt(600));
+        }else if (this.position.y>600){
+
+        }
+        this.position.addUp(velocity);
     }
 
     public void renderPlayer(Graphics graphics){
-        graphics.setColor(Color.WHITE);
-        graphics.fillPolygon(xPoints,yPoints,points);
+        update();
+        graphics.setColor(this.color);
+
+        graphics.fillPolygon(this.polygon);
     }
 
-    //graphics.drawPolygon(new int[] {10, 20, 30}, new int[] {100, 20, 100}, 3);
+    private void update(){
+        this.polygon.reset();
+        Vector2D center = this.vertices.stream()
+                .reduce(new Vector2D(), (v1, v2) -> v1.add(v2))//tat ca vector ttrong list se duoc cong het lai
+                .multiply(1.0f / (float)this.vertices.size());
+
+        Vector2D translate = this.position.subtract(center);
+        this.vertices.stream()
+                .map(vector2D -> vector2D.add(translate))//duyet tat ca phan tu -> vector se duoc dong them 1 vector khac
+                .forEach(vector2D -> polygon.addPoint((int) vector2D.x, (int) vector2D.y));
+
+    }
 }
