@@ -29,11 +29,13 @@ public class Player {
 
     public void runPlayer(){
         if (this.position.x > 1024){
-            this.position.x = 0;
-            this.position.y = random.nextInt(600);
+            /*this.position.x = 0;
+            this.position.y = random.nextInt(600);*/
+            this.position.set(0, random.nextInt(600));
         }else if (this.position.y>600){
-            this.position.y = 0;
-            this.position.x = random.nextInt(1024);
+            /*this.position.y = 0;
+            this.position.x = random.nextInt(1024);*/
+            this.position.set(random.nextInt(1024), 0);
         }
         this.position.addUp(velocity);
     }
