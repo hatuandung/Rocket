@@ -19,9 +19,9 @@ public class Player {
         this.velocity = velocity;
         this.polygon = new Polygon();
         this.vertices = Arrays.asList(
-                new Vector2D(),
-                new Vector2D(0, 16),
-                new Vector2D(20,8)
+                new Vector2D().rotate(45),
+                new Vector2D(0, 16).rotate(45),
+                new Vector2D(20,8).rotate(45)
         );
         random = new Random();
         this.vertices.forEach(vector2D -> polygon.addPoint((int) vector2D.x, (int) vector2D.y));
@@ -32,7 +32,8 @@ public class Player {
             this.position.x = 0;
             this.position.set(0,random.nextInt(600));
         }else if (this.position.y>600){
-
+            this.position.y = 0;
+            this.position.set(random.nextInt(1024),0);
         }
         this.position.addUp(velocity);
     }

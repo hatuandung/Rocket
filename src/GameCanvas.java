@@ -110,7 +110,7 @@ public class GameCanvas extends JPanel {
     }
 
     private void createPlayer(){
-        this.player = new Player(new Vector2D(200,200),new Vector2D(10,0),Color.red);
+        this.player = new Player(new Vector2D(200,200),new Vector2D(5,5),Color.red);
     }
 
     private BufferedImage loadImage(String path){
