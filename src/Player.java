@@ -6,57 +6,35 @@ import java.util.Random;
 
 public class Player {
     public Vector2D position;
-    public Vector2D velocity;
-    public Color color;
-    public Polygon polygon;
-    private List<Vector2D> vertices;
-    Random random;
+    private PolygonRenderer renderer;
+    public PlayerMove playerMove;
 
+    public Player() {
 
-    public Player(Vector2D position,Vector2D velocity, Color color) {
-        this.position = position;
-        this.color = color;
-        this.velocity = velocity;
-        this.polygon = new Polygon();
-        this.vertices = Arrays.asList(
-                new Vector2D().rotate(45),
-                new Vector2D(0, 16).rotate(45),
-                new Vector2D(20,8).rotate(45)
+        this.position = new Vector2D();
+        this.renderer = new PolygonRenderer(Color.red,
+                new Vector2D(),//.rotate(playerMove.angle),
+                new Vector2D(0, 16),//.rotate(playerMove.angle),
+                new Vector2D(20, 8)//.rotate(playerMove.angle)
         );
-        random = new Random();
-        this.vertices.forEach(vector2D -> polygon.addPoint((int) vector2D.x, (int) vector2D.y));
+
+
+
+        this.playerMove = new PlayerMove();
     }
 
-    public void runPlayer(){
-        if (this.position.x > 1024){
-            /*this.position.x = 0;
-            this.position.y = random.nextInt(600);*/
-            this.position.set(0, random.nextInt(600));
-        }else if (this.position.y>600){
-            /*this.position.y = 0;
-            this.position.x = random.nextInt(1024);*/
-            this.position.set(random.nextInt(1024), 0);
-        }
-        this.position.addUp(velocity);
-    }
+    public void runPlayer() {
+        //this.renderer.angle = this.angle;
 
-    public void renderPlayer(Graphics graphics){
-        update();
-        graphics.setColor(this.color);
-
-        graphics.fillPolygon(this.polygon);
-    }
-
-    private void update(){
-        this.polygon.reset();
-        Vector2D center = this.vertices.stream()
-                .reduce(new Vector2D(), (v1, v2) -> v1.add(v2))//tat ca vector ttrong list se duoc cong het lai
-                .multiply(1.0f / (float)this.vertices.size());
-
-        Vector2D translate = this.position.subtract(center);
-        this.vertices.stream()
-                .map(vector2D -> vector2D.add(translate))//duyet tat ca phan tu -> vector se duoc dong them 1 vector khac
-                .forEach(vector2D -> polygon.addPoint((int) vector2D.x, (int) vector2D.y));
+        this.playerMove.runPlayer(this);
+        this.renderer.angle = this.playerMove.angle;
+        position.rotate(renderer.angle);
 
     }
+
+    public void renderPlayer(Graphics graphics) {
+        this.renderer.renderPlayer(graphics, this.position);
+    }
+
+
 }
